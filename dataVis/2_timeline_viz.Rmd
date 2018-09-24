@@ -1,0 +1,105 @@
+---
+title: "**DataVis Demo - visualizing timeline interactively**"
+author: "Fei Xing"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: "cosmo"
+    # toc: true
+    # toc_float: 
+    #   collapsed: false
+---
+
+```{r packages_functions, message = FALSE, warning=FALSE, echo = F}
+# Load packages
+library(pacman)
+source("pkg_list.R")
+p_load(timevis)
+
+# Global knitr options
+opts_chunk$set(fig.align = "center", echo = F, warning = F, message = F, comment = F)
+```
+
+
+# Measure Testing {.tabset .tabset-fade .tabset-pills}
+
+## Timeline
+
+The examples below use package `timevis` to create timeline visualizations.
+
+```{r}
+timevis(data = data.frame(
+  start = c("2017-06-28", 
+            "2017-07-14", 
+            "2017-07-18", 
+            "2017-07-06", 
+            "2017-07-14", 
+            "2017-07-28",
+            "2017-08-01",
+            "2017-07-14",
+            "2017-07-19",
+            "2017-07-31",
+            "2017-08-02"),
+  end = c("2017-07-13 17:00:00", 
+          "2017-07-17 17:00:00", 
+          "2017-07-19 17:00:00", 
+          "2017-07-13 17:00:00", 
+          "2017-07-27 17:00:00", 
+          "2017-07-31 17:00:00", 
+          "2017-08-02 17:00:00",
+          "2017-07-16 17:00:00", 
+          "2017-07-28 17:00:00", 
+          "2017-08-01 17:00:00", 
+          "2017-08-04 17:00:00"),
+  content = c("measr testing", 
+              "QA/QC", 
+              "Post QA update",
+              "stat analysis specs", 
+              "measr testing", 
+              "QA/QC", 
+              "Post QA update",
+              "stat analysis specs", 
+              "measr testing", 
+              "QA/QC", 
+              "Post QA update"),
+  group = c(1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3)),
+  groups = data.frame(id = 1:4, content = c("Measure A", "Measure B", "Measure C", "PTO")),
+  width = 1000
+  ) %>%
+  addItem(list(content = "Dave", 
+               start = "2017-07-03",# end = "2017-07-04",
+               group = 4)) %>%
+  addItem(list(content = "Dave", 
+               start = "2017-07-05",# end = "2017-07-04",
+               group = 4)) %>%
+  addItem(list(content = "Dave", 
+               start = "2017-07-06",# end = "2017-07-04",
+               group = 4)) %>%
+  addItem(list(content = "Kate", 
+               start = "2017-07-13",# end = "2017-07-04",
+               group = 4)) %>%
+  addItem(list(content = "Kate", 
+               start = "2017-07-14 13:00:00", 
+               end = "2017-07-14 23:59:00",
+               group = 4)) %>%
+  addItem(list(content = "Kate", 
+               start = "2017-07-21", end = "2017-07-23",
+               group = 4)) %>%
+  addItem(list(content = "Kate", 
+               start = "2017-08-25",# end = "2017-07-04",
+               group = 4)) %>%
+  addItem(list(content = "Felix", 
+               start = "2017-06-29 00:00:00",
+               end = "2017-06-29 12:00:00",
+               group = 4 #, style = "color:blue"
+               )) %>%
+  addItem(list(content = "Felix", 
+               start = "2017-07-3",# end = "2017-07-04",
+               group = 4)) %>%
+  addItem(list(content = "Dave", 
+               start = "2017-08-10 00:00:00",
+               end = "2017-08-18 12:00:00",
+               group = 4 #, style = "color:blue"
+               ))
+```
+
