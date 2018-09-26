@@ -2,4 +2,4 @@
 .Rhistory
 .RData
 .Ruserdata
-.dataVis/*.html
+dataVis/*.html
