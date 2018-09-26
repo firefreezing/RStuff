@@ -1,0 +1,155 @@
+---
+title: "UpSet Plot for Measure Component Illustration"
+author: "Fei"
+date: '2018-09-26'
+output:
+  html_document:
+    keep_md: true
+    toc: yes
+  html_notebook:
+    theme: cosmo
+    toc: yes
+    toc_float:
+      collapsed: no
+---
+
+
+
+Read the measure data
+
+
+```r
+dat_measr <- read.csv("./data/dat_measure.csv")
+```
+
+### **Query particular intersection**
+
+
+```r
+upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
+      keep.order = T, order.by = "freq", mb.ratio = c(.6, .4),
+      query.legend = "bottom",
+      queries = list(
+        list(query = intersects, params = list("numer", "denom"),
+             color = "steelblue", active = T, query.name = "Numerator  "),
+        list(query = intersects, params = list("numer", "denom", "numer_excld"),
+             color = "orange", active = T, query.name = "Numerator Exclusion")
+      ),
+      text.scale = 1.2,
+      mainbar.y.label = "Component Intersections",
+      sets.x.label = "Encounters per Component")
+```
+
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
+
+### **Query particular subgroup**
+
+The follow green bar illustrates the proportion of male patients within each intersection component: 
+
+
+```r
+upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
+      keep.order = T, order.by = "freq", mb.ratio = c(.6, .4),
+      query.legend = "bottom",
+      queries = list(
+        list(query = elements, params = list("sex", 1),
+             color = "#00694E", active = T, query.name = "Male")
+      ),
+      text.scale = 1.2,
+      mainbar.y.label = "Component Intersections",
+      sets.x.label = "Encounters per Component")
+```
+
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
+
+### **Customized query on attributes**
+
+The follow green bar illustrates the proportion of male patients who are 65 and older within each intersection component: 
+
+
+```r
+myfunc <- function(row, age_thresh, sex) {
+    data <- (row["age"] >= age_thresh) & (row["sex"] == sex)
+}
+
+upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
+      keep.order = T, order.by = "freq", mb.ratio = c(.6, .4),
+      query.legend = "bottom",
+      queries = list(
+        list(query = myfunc, params = list(65, 1),
+             color = "#E70033", active = T, 
+             query.name = "Male who are 65 and older")
+      ),
+      text.scale = 1.2,
+      mainbar.y.label = "Component Intersections",
+      sets.x.label = "Encounters per Component")
+```
+
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
+
+Another way to do it using expression:
+
+```r
+upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
+      keep.order = T, order.by = "freq", mb.ratio = c(.6, .4),
+      query.legend = "bottom",
+      queries = list(
+        list(query = myfunc, params = list(65, 1),
+             color = "#E70033", active = T, 
+             query.name = "Male who are 65 and older")
+      ),
+      expression = "sex == 1 & age >= 65",
+      text.scale = 1.2,
+      mainbar.y.label = "Component Intersections",
+      sets.x.label = "Encounters per Component")
+```
+
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+
+### **Build-in attribute plots associate with UpSet plot**
+
+In this set of visualizations, the UpSet plot is the `active plot` (or the sender, if using terminology in communication theory), and all other scatter plots and histograms are the `passive plots` (or the receivers). 
+
+
+```r
+upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
+      keep.order = T, order.by = "freq", mb.ratio = c(.6, .4),
+      query.legend = "bottom",
+      queries = list(
+        list(query = intersects, params = list("numer", "denom"),
+             color = "steelblue", active = T, query.name = "Numerator  "),
+        list(query = intersects, params = list("numer", "denom", "numer_excld"),
+             color = "orange", active = T, query.name = "Numerator Exclusion")
+      ),
+      text.scale = 1.2,
+      mainbar.y.label = "Component Intersections",
+      sets.x.label = "Encounters per Component",
+      attribute.plots = list(gridrows = 100,
+                             plots = list(list(plot = histogram, x = "age", queries = T),
+                                          list(plot = histogram, x = "los", queries = T),
+                                          list(plot = scatter_plot, x = "age", 
+                                               y = "sex", queries = T),
+                                          list(plot = scatter_plot, x = "age", 
+                                               y = "los", queries = T)),
+                             ncols = 2))
+```
+
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+
+### **Boxplot of attribute by intersection**
+
+Add boxplot to show the distribution of age (`age`) and length of stay (`los`) across all intersections.
+
+
+```r
+upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
+      keep.order = T, order.by = "freq", mb.ratio = c(.6, .4),
+      text.scale = 1.2,
+      mainbar.y.label = "Component Intersections",
+      sets.x.label = "Encounters per Component",
+      boxplot.summary = c("age", "los"))
+```
+
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+
+
