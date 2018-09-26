@@ -198,7 +198,9 @@ plot_spgt <- ggplot(dat_spgt, aes(key, value, group = state, color = label)) +
   theme_minimal()
 
 plot_spgt
+```
 
+```{r, eval = F}
 ggplotly(plot_spgt)
 ```
 
