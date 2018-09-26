@@ -321,17 +321,17 @@ margin <- list(l = 150, r = 20, b = 50,
 ```
 
 
-```{r}
+```{r, eval = F}
 ggplotly(myplot_1) %>%
     layout(autosize = T, width = 800, height = 600, margin = margin)
 ```
 
-```{r}
+```{r, eval = F}
 ggplotly(myplot_2) %>%
     layout(autosize = T, width = 800, height = 600, margin = margin)
 ```
 
-```{r}
+```{r, eval = F}
 ggplotly(myplot_3) %>%
     layout(autosize = T, width = 800, height = 600, margin = margin)
 ```
