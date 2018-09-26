@@ -1,23 +1,31 @@
-UpSet Plot for Measure Component Illustration
-================
-Fei
-2018-09-26
+---
+title: "UpSet Plot for Measure Component Illustration"
+author: "Fei"
+date: '2018-09-26'
+output:
+  html_document:
+    keep_md: true
+    toc: yes
+  html_notebook:
+    theme: cosmo
+    toc: yes
+    toc_float:
+      collapsed: no
+---
 
--   [**Query particular intersection**](#query-particular-intersection)
--   [**Query particular subgroup**](#query-particular-subgroup)
--   [**Customized query on attributes**](#customized-query-on-attributes)
--   [**Build-in attribute plots associate with UpSet plot**](#build-in-attribute-plots-associate-with-upset-plot)
--   [**Boxplot of attribute by intersection**](#boxplot-of-attribute-by-intersection)
+
 
 Read the measure data
 
-``` r
+
+```r
 dat_measr <- read.csv("./data/dat_measure.csv")
 ```
 
 ### **Query particular intersection**
 
-``` r
+
+```r
 upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
       keep.order = T, order.by = "freq", mb.ratio = c(.6, .4),
       query.legend = "bottom",
@@ -32,13 +40,14 @@ upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
       sets.x.label = "Encounters per Component")
 ```
 
-<img src="5_upset_plot_example_files/figure-markdown_github/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
 
 ### **Query particular subgroup**
 
-The follow green bar illustrates the proportion of male patients within each intersection component:
+The follow green bar illustrates the proportion of male patients within each intersection component: 
 
-``` r
+
+```r
 upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
       keep.order = T, order.by = "freq", mb.ratio = c(.6, .4),
       query.legend = "bottom",
@@ -51,13 +60,14 @@ upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
       sets.x.label = "Encounters per Component")
 ```
 
-<img src="5_upset_plot_example_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
 
 ### **Customized query on attributes**
 
-The follow green bar illustrates the proportion of male patients who are 65 and older within each intersection component:
+The follow green bar illustrates the proportion of male patients who are 65 and older within each intersection component: 
 
-``` r
+
+```r
 myfunc <- function(row, age_thresh, sex) {
     data <- (row["age"] >= age_thresh) & (row["sex"] == sex)
 }
@@ -75,11 +85,11 @@ upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
       sets.x.label = "Encounters per Component")
 ```
 
-<img src="5_upset_plot_example_files/figure-markdown_github/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
 
 Another way to do it using expression:
 
-``` r
+```r
 upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
       keep.order = T, order.by = "freq", mb.ratio = c(.6, .4),
       query.legend = "bottom",
@@ -94,13 +104,14 @@ upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
       sets.x.label = "Encounters per Component")
 ```
 
-<img src="5_upset_plot_example_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
 
 ### **Build-in attribute plots associate with UpSet plot**
 
-In this set of visualizations, the UpSet plot is the `active plot` (or the sender, if using terminology in communication theory), and all other scatter plots and histograms are the `passive plots` (or the receivers).
+In this set of visualizations, the UpSet plot is the `active plot` (or the sender, if using terminology in communication theory), and all other scatter plots and histograms are the `passive plots` (or the receivers). 
 
-``` r
+
+```r
 upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
       keep.order = T, order.by = "freq", mb.ratio = c(.6, .4),
       query.legend = "bottom",
@@ -123,13 +134,14 @@ upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
                              ncols = 2))
 ```
 
-<img src="5_upset_plot_example_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
 
 ### **Boxplot of attribute by intersection**
 
 Add boxplot to show the distribution of age (`age`) and length of stay (`los`) across all intersections.
 
-``` r
+
+```r
 upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
       keep.order = T, order.by = "freq", mb.ratio = c(.6, .4),
       text.scale = 1.2,
@@ -138,4 +150,6 @@ upset(dat_measr, sets = c("denom", "denom_excld", "numer", "numer_excld"),
       boxplot.summary = c("age", "los"))
 ```
 
-<img src="5_upset_plot_example_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+<img src="5_upset_plot_example_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+
+

@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 project_name: "QMD"
 output:
   html_document:
+    keep_md: true
     theme: "cosmo"
     toc: true
     toc_float: 

@@ -3,7 +3,8 @@ title: "UpSet Plot for Measure Component Illustration"
 author: "Fei"
 date: '`r Sys.Date()`'
 output:
-  github_document:
+  html_document:
+    keep_md: true
     toc: yes
   html_notebook:
     theme: cosmo
