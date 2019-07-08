@@ -162,7 +162,7 @@ myplot_3 <- ggplot(data = dat_clean %>% filter(!is.na(denominator) & !is.na(paym
 myplot_3
 ```
 
-#### Spaghetti Plots
+### Spaghetti Plots
 
 ```{r}
 p_load(nlme)

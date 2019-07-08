@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 dataVis/*.html
+dplyr_w_packrat/packrat/lib*/
+daily_data_analytics_notes
