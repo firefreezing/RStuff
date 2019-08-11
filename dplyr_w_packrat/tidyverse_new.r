@@ -45,8 +45,8 @@ install.packages("assertthat")
 # check package status
 packrat::status()
 
-# packrat::snapshot()  # set packrat to use the current library
-packrat::restore(overwrite.dirty = T)  # ask packrat to get back to the last snapshot
+packrat::snapshot()  # set packrat to use the current library
+# packrat::restore(overwrite.dirty = T)  # ask packrat to get back to the last snapshot
 
 # load data ---------------------------------------------------------------
 
