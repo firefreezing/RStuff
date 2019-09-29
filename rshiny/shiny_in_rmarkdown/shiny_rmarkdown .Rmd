@@ -1,0 +1,265 @@
+---
+title: "Use RShiny in RMarkdown"
+author: "Fei"
+date: "`r lubridate::today()`"
+output: 
+  html_document:
+    code_folding: hide
+    theme: cosmo
+runtime: shiny
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T)
+
+library(tidyverse)
+library(shiny)
+# library(shinyTree)
+```
+
+
+This rmardown file provides some notes on RShiny, by various examples. Specifically, it covers the following information:
+
++  nesting `rshiny` in `rmarkdown`
++  `reactivity` features
+
+### **Summary**
+
++ In general RShiny development, one can develop all the heavylifting components in the `server` side via `render` functions and leave the `ui` side relatively clean by just listing the arranagement of the UI components using `xxxOutput` functions. 
+
++ When writing RShiny in RMarkdown, one can break the traditional `ui` and `server` components and just flow the content within the R chunk. My understanding is that the R chunk in rmarkdown will handle the ui feature (which is essentially taking care of the html piece even without actually writing html).
+
++ All rshiny widgets can be viewed as special cases of `observeEvent`s.
+
++ Delay reactions using `eventReactive` allows to make update for multiple features and then trigger the change in output once the reactive values in 1st argument change (e.g. a click on the "GO" button). 
+
+
+### **References**
+
+1. [RShiny cheatsheet](https://shiny.rstudio.com/images/shiny-cheatsheet.pdf), by RStudio
+
+
+#### **Example 1**: simple interactive visualization 
+
+One can simply put all the UI outputs under the `ui` session use `xxxOutput` functions, and put the meat in the corresponding `renderxxx` function.
+
+```{r, echo = T}
+## example 1 - create a simple interactive app, and then move the ui piece to the server component,
+## using renderUI
+
+ui <- fluidPage(
+  uiOutput(outputId = "ui"),
+  br(),
+  plotOutput(outputId = "hist")
+)
+
+server <- function(input, output){
+  output$ui <- renderUI({
+     sliderInput(inputId = "n", label = "Sample size", min = 20, max = 300, value = 20)
+  })
+  
+  output$hist <- renderPlot({
+    ggplot() +
+      geom_histogram(aes(rnorm(input$n))) +
+      labs(title = "Histogram of Normal Distribution", x = "value", y = "n") +
+      theme_classic()
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+#### **Example 2**: ObserveEvent
+
+`observeEvent()` runs code in 2nd argument when reactive values in 1st argument change. Hence, the above example can be viewed as an example under the `observeEvent` scenario, where a value in the sliderbar is the 1st argument, and the histogram (as 2nd argument) is updated whenever a new value is selected through the slidingbar. 
+
+Here is a rewrite of the previous example:
+
+```{r, echo = T}
+# rewrite the previous email into
+ui <- fluidPage(
+  sliderInput(inputId = "n", label = "Sample size", min = 20, max = 300, value = 20),
+  br(),
+  plotOutput(outputId = "hist")
+)
+
+server <- function(input, output){
+  observeEvent(input$n, {output$hist <- renderPlot({
+      ggplot() +
+        geom_histogram(aes(rnorm(input$n))) +
+        labs(title = "Histogram of Normal Distribution", x = "value", y = "n") +
+        theme_classic()
+      })
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+Organize the code in a way such that all the feature settings are conducted (through `render`) in the `server` section.
+
+```{r, echo = T}
+
+ui <- fluidPage(
+  uiOutput(outputId = "n"),
+  br(),
+  plotOutput(outputId = "hist")
+)
+
+server <- function(input, output){
+  observeEvent(
+    output$n <- renderUI({
+      sliderInput(inputId = "n", label = "Sample size", min = 20, max = 300, value = 20)
+      }), 
+    {output$hist <- renderPlot({
+      ggplot() +
+        geom_histogram(aes(rnorm(input$n))) +
+        labs(title = "Histogram of Normal Distribution", x = "value", y = "n") +
+        theme_classic()
+      })
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+
+
+
+
+#### **Example 3**: eventReactive
+
+```{r, echo = T}
+
+ui <- fluidPage(
+  sliderInput(inputId = "n", label = "Sample size", min = 20, max = 300, value = 20),
+  selectInput(inputId = "color", label = "Select bar color:",
+              c("Blue" = "steelblue",
+                "Red" = "red",
+                "Green" = "green")),
+  actionButton(inputId = "go", "Update"),
+  plotOutput(outputId = "hist")
+)
+
+server <- function(input, output){
+  plot_n <- eventReactive(
+    input$go, {input$n})
+  
+  plot_color <- eventReactive(
+    input$go, {input$color})
+  
+  output$hist <- renderPlot({
+      ggplot() +
+        geom_histogram(aes(rnorm(plot_n())), fill = plot_color()) +
+        labs(title = "Histogram of Normal Distribution", x = "value", y = "n") +
+        theme_classic()
+      })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+Now re-organize the code flow slighly to make it a better `rshiny` and `rmarkdown` marriage. 
+
+```{r}
+sliderInput(inputId = "n", label = "Sample size", min = 20, max = 300, value = 20)
+
+selectInput(inputId = "color", label = "Select bar color:",
+            c("Blue" = "steelblue",
+              "Red" = "red",
+              "Green" = "green"))
+
+actionButton(inputId = "go", "Update")
+
+plot_n <- eventReactive(
+  input$go, {input$n})
+
+plot_color <- eventReactive(
+  input$go, {input$color})
+  
+renderPlot({
+  ggplot() +
+    geom_histogram(aes(rnorm(plot_n())), fill = plot_color()) +
+    labs(title = "Histogram of Normal Distribution", x = "value", y = "n") +
+    theme_classic()
+  })
+```
+
+
+#### **Backup materials**
+
+```{r, eval = F, echo = F}
+ui <- fluidPage(
+  uiOutput(outputId = "ui"),
+  
+  actionButton("update1", "Update Here 1st"),
+  
+  uiOutput(outputId = "ui2")
+  # ,
+  # plotOutput(outputId = "hist")
+)
+
+server <- function(input, output){
+  
+  roster <- 1:5
+  
+  output$ui <- renderUI({
+    checkboxGroupInput(inputId = "select1"
+                       , label = "Select 1st subset to include for Analysis"
+                       , choices = roster
+                       , selected = NULL
+                       , inline = TRUE)
+  })
+
+  
+  
+  dat <- data.frame(var1 = c(1,2,3,4,5), 
+                    var2 = c("test1","test2","test3","test4","test5"))
+
+  roster2 <- eventReactive(input$update1, dat$var2[dat$var1 %in% input$select1])
+  # roster2 <- reactive(dat$var2[dat$var1 %in% input$select1])
+
+  output$ui2 <- renderUI({
+    checkboxGroupInput(inputId = "select2"
+                   , label = "Select 2nd subset to include for Analysis"
+                   , choices = roster2()
+                   , selected = NULL
+                   , inline = TRUE)
+    })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+
+```{r, echo = F, eval = F}
+roster <- 1:5
+
+checkboxGroupInput(inputId = "select1"
+                   , label = "Select 1st subset to include for Analysis"
+                   , choices = roster
+                   , selected = NULL
+                   , inline = TRUE)
+
+actionButton("update1", "Update Here 1st") 
+
+dat <- data.frame(var1 = c(1,2,3,4,5), 
+                  var2 = c("test1","test2","test3","test4","test5"))
+
+roster2 <- eventReactive(input$update1, dat$var2[dat$var1 %in% input$select1])
+# roster2 <- reactive(dat$var2[dat$var1 %in% input$select1])
+
+
+# since using a reactive object here, need to render it in the "server" environment 
+renderUI({
+  checkboxGroupInput(inputId = "select2"
+                   , label = "Select 2nd subset to include for Analysis"
+                   , choices = roster2()
+                   , selected = NULL
+                   , inline = TRUE)
+  })
+```
+
+
+
