@@ -1,0 +1,19 @@
+### V. Validity testing
+
+
+
+
+
+#### **References**
+
+
+-  Bohl, A., Finucane, M., Ross, J., Wang, S., Ayele, D. (2015). Methods for Developing and Testing Risk- and Reliability-Adjustment Models for HCBC Composite Measures. Draft Report Submitted to the Department of Health and Human Services. 
+
+-  Measure Testing Task Force Report - National Quality Forum (January 2011). <http://www.qualityforum.org/Publications/2011/01/Measure_Testing_Task_Force.aspx> (accessed October 17, 2016)
+
+-  Morris, C. N. (1983) Parametric Empirical Bayes Inference: Theory and Applications. Journal of the American Statistical Association, 78:381, 47-55
+
+-  Wang, S., Finucane, M., Lin, X., Yoon, F., Jones, D. (2014). Reliability Adjustment of the AHRQ Quality Indicators under an Empirical Bayes Framework. Final Report Submitted to the Department of Health and Human Services.
+
+􀟪􀯕􀯘􀯧􀯪􀯘􀯘􀯡
+􀬶 􀵅 􀟪􀯪􀯜􀯧􀯛􀯜􀯡

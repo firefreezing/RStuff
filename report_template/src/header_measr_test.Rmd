@@ -1,0 +1,62 @@
+---
+title: "**Measure Testing for [Measure Name]**"
+author: "QMD Stat Team"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: "cosmo"
+    code_folding: hide
+---
+
+```{r packages_functions, message = FALSE, warning=FALSE, echo = F}
+# load packages
+library(pacman)
+source("pkg_list.R")
+
+# load helper functions
+source("0_helper_fcts.r")
+
+# global knitr options
+opts_chunk$set(fig.align = "center", echo = T, warning = F, message = F, comment = F)
+```
+
+### **Decision log**
+Add items here to reflect main decision updates during the process
+
++   01/01/2018 - update the analytic data by adding new records
++   02/02/2018 - revise the exclusion rule
++   03/03/2018 - change measre period from 2013-2014 to 2013-2015
++   etc.
+
+### **Status**
+Document the main milestones of the measure testing work. 
+
++   preliminary testing (done)
++   code review (in progress)
++   QAed by measure lead (not yet)
+
+## **Measure Testing Results** {.tabset .tabset-fade .tabset-pills}
+
+
+```{r, child = "1_measr_dat_intro.Rmd", eval = T}
+
+```
+
+
+```{r, child = "2_state_analysis.Rmd", eval = T}
+
+```
+
+
+```{r, child = "3_subgroup_analysis.Rmd", eval = T}
+
+```
+
+
+```{r, child = "4_reliability.Rmd", eval = T}
+
+```
+
+```{r, child = "5_validity.Rmd", eval = T}
+
+```

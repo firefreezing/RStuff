@@ -1,0 +1,14 @@
+### II. Meaningful Difference by States {.tabset .tabset-fade .tabset-pills} 
+
+```{r echo=FALSE, eval=TRUE, include=FALSE}
+out <- NULL
+for(i in 1:3){
+    
+  env <- new.env() #create a new empty environment, it inherits objects from the current environment.
+  
+  out <- c(out, knit_child('2_state_analysis_child.Rmd', envir=env))
+   
+}
+```
+
+`r paste(out, collapse='\n')`

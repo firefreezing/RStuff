@@ -1,0 +1,26 @@
+### I. Measure and Data Information
+
+#### **I.a. About [Measure Name]**
+
+Short description of the measure...
+
+**Numerator**: definition of the numerator
+
+
+**Denominator**: definition of the denominator
+
+
+**Measure period**: 
+
+**Measure type** proportion, rate, continuous, etc.
+
+
+#### **I.b. About the analytic data**
+
+The analytic files are saved here: `N:\Project\50171_QM_DualsLTSSIAPs\Restricted\SASGRID\DATA\XXX\Build_Analysis_File\OY1\Tables`
+
+Specifically, here are the datasets used for the testing:
+
++	*ABC.csv* – the state-level XXX measure results. It includes the current numerator definition. 
+
++	*XYZ.sas7bdat* – subgroup measure results.

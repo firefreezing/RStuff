@@ -1,0 +1,11 @@
+
+```{r echo=FALSE, eval=TRUE, results='asis'}
+cat("#### Version ", i, "\n")
+```
+
+In this session, we can add meaningful difference analyses for multiple versions (e.g. different population, exclusion rules, etc.)
+
+```{r echo=FALSE, eval=TRUE, results='asis'}
+iris[i:(i+10), ] %>% as.data.frame %>% kable %>% print
+```
+

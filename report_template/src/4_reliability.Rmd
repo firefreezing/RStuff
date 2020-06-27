@@ -1,0 +1,10 @@
+### IV. Reliability and Validity
+
+#### **IV.a. Signal to Noise Reliability**
+
+The signal-to-noise (SNR) statistic, R (ranging from 0 to 1), summarizes the proportion of the variation between entity scores (ranging from 0 to 1) that is due to real differences in underlying entity characteristics. If R=0, there is no variation on the measure across entities and the measure is not useful to distinguish between entities with respect to healthcare quality. Conversely, if R=1, all entity scores are free of sampling error, and all variation represents real differences between entities in the measure result. We estimated SNR reliability for the DUALS-1 by first estimating the “noise” (within-entity variability), adjusted for the number of beneficiaries within that State or HRR and estimated the “signal” (between entity).
+We computed the SNR statistic, R, as the ratio of the signal variance (which is common across all entities) to the sum of the signal variance and the noise variance (which varies by entity):
+
+$$R = \frac{\sigma^2_{\text{between}}}{\sigma^2_{\text{between}} + \sigma^2_{\text{within}}}$$
+
+ 􀵌
