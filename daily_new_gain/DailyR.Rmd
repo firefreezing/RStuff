@@ -1,0 +1,52 @@
+---
+title: "DailyR"
+author: "firefreezing"
+date: "11/24/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## (2020-11-24) use `safely`
+
+```{r}
+library(purrr)
+```
+
+Create a vector of mixed data type 
+```{r}
+data <- list(1, "a", 10, 20)
+```
+
+Return errors because `log` cannot handle character value
+```{r, eval = F}
+map(data, log)
+```
+
+Use safely:
+```{r}
+a <- map(data, safely(log, otherwise = 9999))
+```
+
+```{r}
+a
+```
+
+```{r}
+a %>% transpose %>% .[['result']] %>% unlist
+```
+
+Turn list into dataframe:
+```{r}
+l <- list(a = list(var.1 = 1, var.2 = 2, var.3 = 3)
+        , b = list(var.1 = 4, var.2 = 5)
+        , c = list(var.1 = 7, var.3 = 9)
+        , d = list(var.1 = 10, var.2 = 11, var.3 = NA))
+
+df <- dplyr::bind_rows(l)
+df <- purrr::map_df(l, dplyr::bind_rows)
+df <- purrr::map_df(l, ~.x)
+```
+
