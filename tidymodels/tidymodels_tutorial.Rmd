@@ -1,0 +1,147 @@
+---
+title: "tidymodels"
+author: "firefreezing"
+date: "4/10/2021"
+output: github_document
+---
+
+```{r setup, include=FALSE, warning = F, message = F, comment = F}
+# global knitr options
+knitr::opts_chunk$set(fig.align = "center", echo = T, warning = F, message = F, comment = F)
+```
+
+### Nex steps:
+
+1. try the workflow: add_recipe, add_model, fine_tune, etc.
+2. try both training-validate-test, and cv + test
+3. set a workflow to screen many models
+4. benchmarking (running time)
+
+### Useful functions:
+
++   `prep()`: execute the transformations from the recipe on top of the data that is supplied
++   `bake()`: turn the testing data into a preprocessed testing data following the recipe 
++   `juice()`: turn the training data into a preprocessed training data following the recipe
+
+
+```{r load_pkgs}
+library(tidymodels)
+
+# Helper packages
+library(readr)       # for importing data
+library(broom.mixed) # for converting bayesian models to tidy tibbles
+library(dotwhisker)  # for visualizing regression results
+library(vip)
+```
+
+## Data preparation
+
+You can also embed plots, for example:
+
+```{r load_data, echo=FALSE}
+hotels <- 
+  read_csv('https://tidymodels.org/start/case-study/hotels.csv') %>%
+  mutate_if(is.character, as.factor) 
+
+dim(hotels)
+```
+
+```{r}
+glimpse(hotels)
+```
+
+### Data splitting & resampling
+
+```{r}
+set.seed(123)
+
+splits <- initial_split(hotels, prop = .8, strata = "children")
+
+hotel_train <- training(splits)
+hotel_test <- testing(splits)
+```
+
+Training data and testing data have similar proportion by `children`, thanks to the `strata` argument. 
+
+```{r}
+hotel_train %>%
+  count(children) %>%
+  mutate(prop = n/sum(n))
+```
+```{r}
+hotel_test %>%
+  count(children) %>%
+  mutate(prop = n/sum(n))
+```
+## Recipe: data preprocessing
+
+```{r}
+holidays <- c("AllSouls", "AshWednesday", "ChristmasEve", "Easter", 
+              "ChristmasDay", "GoodFriday", "NewYearsDay", "PalmSunday")
+
+lr_recipe <- 
+  recipe(children ~ ., data = hotel_train) %>% 
+  step_date(arrival_date) %>% 
+  step_holiday(arrival_date, holidays = holidays) %>% 
+  step_rm(arrival_date) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>% 
+  step_zv(all_predictors()) %>% 
+  step_normalize(all_predictors())
+
+lr_recipe
+```
+
+**prep**
+
+`prep` executes the transformations on top of the data. 
+
+```{r}
+lr_recipe_exe <- lr_recipe %>% prep
+```
+
+**bake**
+
+```{r}
+# "juice" the processed training data
+hotel_train_clean <- juice(lr_recipe_exe)
+
+# "bake" the processed testing data
+hotel_test_clean <- lr_recipe_exe %>%
+  bake(new_data = hotel_test)
+```
+
+## Fit the prediction model
+
+```{r}
+cores <- parallel::detectCores()
+cores
+```
+
+It takes 18.9s to run the model on single core
+It takes 5.9s to run the model on an 8 core machine using `num.threads = cores`
+```{r}
+start_time <- Sys.time()
+
+hotel_ranger <- rand_forest(trees = 100, mode = "classification") %>%
+  set_engine("ranger") %>%
+  fit(children ~ ., data = hotel_train_clean)
+
+end_time <- Sys.time()
+
+end_time - start_time
+```
+
+## Model performance
+
+```{r}
+hotel_ranger %>%
+  predict(hotel_test_clean) %>%
+  bind_cols(hotel_test_clean) %>%
+  metrics(truth = children, estimate = .pred_class)
+```
+
+## Reference
+
++   An R community blog for a gentle introduction: https://rviews.rstudio.com/2019/06/19/a-gentle-intro-to-tidymodels/
++   Tidymodels official tutorial: https://www.tidymodels.org/start/
++   Tidy Modeling with R: https://www.tmwr.org/
